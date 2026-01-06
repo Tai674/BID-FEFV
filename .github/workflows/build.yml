@@ -2,7 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -13,26 +13,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python (for tooling if needed)
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Show files
-        run: ls -la
-
       - name: Build with Buildozer (Docker)
         run: |
+          mkdir -p bin
           docker run --rm \
             -v ${{ github.workspace }}:/home/user/hostcwd \
             -w /home/user/hostcwd \
             kivy/buildozer \
             buildozer -v android debug
 
-      - name: List bin
-        run: ls -la bin || true
-
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ColossusAdmin-APK
